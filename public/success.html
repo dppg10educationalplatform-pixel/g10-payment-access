@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verifying Payment</title>
+</head>
+<body>
+
+<h3>Verifying payment, please wait...</h3>
+
+<script>
+const data = JSON.parse(localStorage.getItem("paymentData"));
+
+fetch("/verify-payment", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(result => {
+  if (result.success) {
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 365);
+    localStorage.setItem("accessExpiry", expiry.getTime());
+    window.location.href = "protected.html";
+  } else {
+    alert("Payment verification failed");
+    window.location.href = "payment.html";
+  }
+});
+</script>
+
+</body>
+</html>

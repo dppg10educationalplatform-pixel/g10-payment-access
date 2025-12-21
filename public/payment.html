@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pay Fees – G10</title>
+</head>
+<body>
+
+<h2>G10 Educational Platform</h2>
+<button id="payBtn">Pay Tuition Fee</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById("payBtn").onclick = function () {
+  var options = {
+    key: "rzp_test_Rru3aihggKA4xx",
+    amount: 1000 * 100,
+    currency: "INR",
+    name: "G10 Educational Platform",
+    description: "Tuition Fee – 365 Days Access",
+    handler: function (response) {
+      localStorage.setItem("paymentData", JSON.stringify(response));
+      window.location.href = "success.html";
+    }
+  };
+  var rzp = new Razorpay(options);
+  rzp.open();
+};
+</script>
+
+</body>
+</html>
