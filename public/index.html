@@ -40,7 +40,7 @@
 
 <div class="card">
   <h2>G10 Educational Platform</h2>
-  <p>Pay Tuition Fee – 1₹ Test Payment</p>
+  <p>Pay Tuition Fee – 365 Days Access</p>
   <button id="payBtn">Pay Now</button>
 </div>
 
@@ -50,13 +50,17 @@ document.getElementById("payBtn").onclick = function () {
 
   // Replace with your Razorpay Key ID (frontend)
   var options = {
-    key: "rzp_test_Rru3aihggKA4xx", // <-- Key ID
-    amount: 1 * 100,                 // 1 INR in paise
+    key: "rzp_test_Rru3aihggKA46N", // <-- Key ID
+    amount: 1 * 100,              // 1000 INR in paise
     currency: "INR",
     name: "G10 Educational Platform",
-    description: "Tuition Fee – 1₹ Test Payment",
+    description: "Tuition Fee – 365 Days Access",
+    // handler called after successful payment
     handler: function (response) {
+      // Save payment info locally
       localStorage.setItem("paymentData", JSON.stringify(response));
+
+      // Redirect to success page (backend will verify)
       window.location.href = "success.html";
     },
     theme: {
