@@ -1,27 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Pay Fees – G10</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pay Fees – G10 Educational Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: #fff;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
 
-<h2>G10 Educational Platform</h2>
-<button id="payBtn">Pay Tuition Fee</button>
+<div class="card">
+  <h2>G10 Educational Platform</h2>
+  <p>Pay Tuition Fee – 365 Days Access</p>
+  <button id="payBtn">Pay Now</button>
+</div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 document.getElementById("payBtn").onclick = function () {
+
+  // Replace with your Razorpay Key ID (frontend)
   var options = {
-    key: "rzp_test_Rru3aihggKA4xx",
-    amount: 1000 * 100,
+    key: "rzp_test_Rru3aihggKA46N", // <-- Key ID
+    amount: 1000 * 100,              // 1000 INR in paise
     currency: "INR",
     name: "G10 Educational Platform",
     description: "Tuition Fee – 365 Days Access",
+    // handler called after successful payment
     handler: function (response) {
+      // Save payment info locally
       localStorage.setItem("paymentData", JSON.stringify(response));
+
+      // Redirect to success page (backend will verify)
       window.location.href = "success.html";
+    },
+    theme: {
+      color: "#4CAF50"
     }
   };
+
   var rzp = new Razorpay(options);
   rzp.open();
 };
