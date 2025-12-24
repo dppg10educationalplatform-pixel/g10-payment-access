@@ -1,64 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>G10 – Paid Access</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{
-  font-family: Arial, sans-serif;
-  background:#eef2f7;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.card{
-  background:#fff;
-  padding:25px;
-  width:320px;
-  border-radius:10px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  text-align:center;
-}
-button{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  font-size:16px;
-  cursor:pointer;
-}
-h2{margin-bottom:15px;}
-</style>
+  <title>Verifying Payment</title>
 </head>
-
 <body>
 
-<script>
-const expiry = localStorage.getItem("accessExpiry");
-
-if (!expiry || Date.now() > Number(expiry)) {
-  alert("Access expired. Please renew your fee.");
-  window.location.href = "payment.html";
-}
-</script>
-
-<div class="card">
-  <h2>🎓 G10 Educational Platform</h2>
-  <p>Access valid for 365 days</p>
-
-  <button onclick="go('https://example.com/link1')">📘 Study Materials</button>
-  <button onclick="go('https://example.com/link2')">📗 Recorded Classes</button>
-  <button onclick="go('https://example.com/link3')">📝 Test Series</button>
-  <button onclick="go('https://example.com/link4')">📊 Performance Report</button>
-  <button onclick="go('https://example.com/link5')">📞 Contact Teacher</button>
-</div>
+<h3>Verifying payment...</h3>
 
 <script>
-function go(url){
-  window.open(url, "_blank");
+const data = JSON.parse(localStorage.getItem("paymentData"));
+
+if (!data) {
+  alert("No payment data");
+  location.href = "payment.html";
 }
+
+fetch("/verify-payment", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(result => {
+  if (result.success) {
+    const expiry = Date.now() + 365 * 24 * 60 * 60 * 1000;
+    localStorage.setItem("accessExpiry", expiry);
+    location.href = "protected.html";
+  } else {
+    alert("Payment verification failed");
+    location.href = "payment.html";
+  }
+});
 </script>
 
 </body>
