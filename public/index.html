@@ -1,75 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pay Fees – G10 Educational Platform</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #eef2f7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .card {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      background-color: #4CAF50;
-      color: #fff;
-      border-radius: 5px;
-      margin-top: 15px;
-    }
-    h2 {
-      margin-bottom: 20px;
-    }
-  </style>
+  <title>Pay Fees – G10</title>
 </head>
 <body>
 
-<div class="card">
-  <h2>G10 Educational Platform</h2>
-  <p>Pay Tuition Fee – 365 Days Access</p>
-  <button id="payBtn">Pay Now</button>
-</div>
+<h2>G10 Educational Platform</h2>
+<button id="payBtn">Pay ₹1</button>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-document.getElementById("payBtn").onclick = function () {
+document.getElementById("payBtn").onclick = async () => {
 
-  // Replace with your Razorpay Key ID (frontend)
-  var options = {
-    key: "rzp_live_RuzRtEr4loxVYw", // <-- Key ID
-    amount: 1 * 100,              // 1000 INR in paise
+  // 1️⃣ Get order from backend
+  const res = await fetch("/create-order", { method: "POST" });
+  const order = await res.json();
+
+  // 2️⃣ Open Razorpay
+  const options = {
+    key: "rzp_live_RuzRtEr4loxVYw",
+    amount: order.amount,
     currency: "INR",
-    name: "G10 Educational Platform",
-    description: "Tuition Fee – 365 Days Access",
-    // handler called after successful payment
-    handler: function (response) {
-      // Save payment info locally
-      localStorage.setItem("paymentData", JSON.stringify(response));
+    order_id: order.id,
 
-      // Redirect to success page (backend will verify)
+    handler: function (response) {
+      localStorage.setItem("paymentData", JSON.stringify(response));
       window.location.href = "success.html";
-    },
-    theme: {
-      color: "#4CAF50"
     }
   };
 
-  var rzp = new Razorpay(options);
-  rzp.open();
+  new Razorpay(options).open();
 };
 </script>
 
