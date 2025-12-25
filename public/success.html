@@ -5,31 +5,47 @@
 </head>
 <body>
 
-<h3>Verifying payment...</h3>
+<h3>Verifying payment, please wait...</h3>
 
 <script>
 const data = JSON.parse(localStorage.getItem("paymentData"));
 
 if (!data) {
-  alert("No payment data");
-  location.href = "payment.html";
+  alert("No payment data found");
+  location.href = "index.html";
 }
+
+// 🔍 DEBUG (VERY IMPORTANT)
+console.log("Payment Data:", data);
 
 fetch("/verify-payment", {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    razorpay_payment_id: data.razorpay_payment_id,
+    razorpay_order_id: data.razorpay_order_id,
+    razorpay_signature: data.razorpay_signature
+  })
 })
 .then(res => res.json())
 .then(result => {
+  console.log("Verification Result:", result);
+
   if (result.success) {
     const expiry = Date.now() + 365 * 24 * 60 * 60 * 1000;
     localStorage.setItem("accessExpiry", expiry);
     location.href = "protected.html";
   } else {
     alert("Payment verification failed");
-    location.href = "payment.html";
+    location.href = "index.html";
   }
+})
+.catch(err => {
+  console.error("Verification error:", err);
+  alert("Server error during verification");
+  location.href = "index.html";
 });
 </script>
 
