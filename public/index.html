@@ -1,28 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Pay Fees – G10</title>
+<meta charset="UTF-8">
+<title>Pay Fees – G10 Educational Platform</title>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
 <h2>G10 Educational Platform</h2>
+<p>Pay Tuition Fee – 365 Days Access</p>
 <button id="payBtn">Pay ₹1</button>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-document.getElementById("payBtn").onclick = async () => {
+document.getElementById("payBtn").onclick = async function () {
 
-  // 1️⃣ Get order from backend
-  const res = await fetch("/create-order", { method: "POST" });
+  // 1️⃣ CREATE ORDER (SERVER CALL)
+  const res = await fetch("/create-order", {
+    method: "POST"
+  });
   const order = await res.json();
 
-  // 2️⃣ Open Razorpay
+  // 2️⃣ OPEN RAZORPAY WITH ORDER ID
   const options = {
-    key: "rzp_live_RuzRtEr4loxVYw",
+    key: "rzp_live_RuzRtEr4loxVYw", // PUBLIC KEY ONLY
     amount: order.amount,
     currency: "INR",
-    order_id: order.id,
-
+    name: "G10 Educational Platform",
+    description: "Tuition Fee – 365 Days Access",
+    order_id: order.id, // 🔥 THIS FIXES EVERYTHING
     handler: function (response) {
       localStorage.setItem("paymentData", JSON.stringify(response));
       window.location.href = "success.html";
